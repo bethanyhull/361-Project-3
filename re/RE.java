@@ -95,10 +95,13 @@ public class RE implements REInterface {
 	      NFA combined = new NFA();
 	      String newStart = (getState()).toString();
 	      combined.addStartState(newStart);
-	      combined.addTransition(combined.getStartState().getName(), "e", term.getStartState());
+	      combined.addTransition(newStart, 'e', term.getStartState().getName());
+	      combined.addTransition(newStart, 'e', regex.getStartState().getName());
+	      combined.addNFAStates(term.getStates());
+	      combined.addNFAStates(regex.getStates());
 	      
 	      // TODO: need a method to handle this
-	      //Creeate a new NFA that combines the two NFA's in an either/or configuration
+	      //Create a new NFA that combines the two NFA's in an either/or configuration
 	      //return new Choice(term,regex) 
 	      return null;
 	    } else {
