@@ -9,6 +9,7 @@ import fa.nfa.NFA;
 
 public class RE implements REInterface {
 	private String regEx;
+	private Int state = 0;
 
 	public RE(String regEx) {
 		this.regEx = regEx;
@@ -19,7 +20,6 @@ public class RE implements REInterface {
 	
 		//TODO: flesh out this method
 		return null;
-
 	}
 	
 	
@@ -70,19 +70,30 @@ public class RE implements REInterface {
 	}
 
 
+	private Int getState() {
+		Int i = state;
+		state++;
+		return i;
+	}
 	
 	
 	/* Regular expression term types. */
 
+	/**
+	 * Handles the "|" char
+	 * Takes a term and regex NFA and concats them and returns them
+	 * Or if no | returns the term NFA
+	 * @return
+	 */
 	private NFA regex() {
-		NFA term = term() ;
+		NFA term = term();
 
 	    if (more() && peek() == '|') {
 	      eat ('|') ;
 	      NFA regex = regex();
 	      
 	      // TODO: need a method to handle this
-	      //Creeate a new NFA that combines the two in an either/or configuration
+	      //Creeate a new NFA that combines the two NFA's in an either/or configuration
 	      //return new Choice(term,regex) 
 	      return null;
 	    } else {
@@ -93,8 +104,15 @@ public class RE implements REInterface {
 	}
 
 	private NFA term() {
-		return null;
-		//TODO: flesh out this method
+		NFA factor = RegEx.blank ;
+
+	    while (more() && peek() != ')' && peek() != '|') {
+	      NFA nextFactor = factor();
+	      return null;
+	      //TODO: Concatination of factor and next factor
+	    }
+
+	    return factor ;
 	}
 
 	private NFA factor() {
@@ -105,7 +123,27 @@ public class RE implements REInterface {
 		return baseNFA;
 	}
 
+	/**
+	 * Most basic of the levels parses "()" and individual chars in the language
+	 * 
+	 * @return basic
+	 */
 	private NFA base() {
+		switch (peek()) {
+	      case '(':
+	        eat('(') ;
+	        RegEx r = regex() ;  
+	        eat(')') ;
+	      return r ;
+
+	      case '\\':
+	       eat ('\\') ;
+	       char esc = next() ;
+	      return new Primitive(esc) ;
+
+	      default:
+	      return new Primitive(next()) ;
+	    }
 		return null;
 		//TODO: flesh out this method
 	}
