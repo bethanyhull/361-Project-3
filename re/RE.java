@@ -127,7 +127,7 @@ public class RE implements REInterface {
 	    
 	    while (more() && peek() == '*') {
 	      eat('*') ;
-	      base = new Repetition(base) ;
+//	      base = new Repetition(base) ;
 	    }
 
 		//TODO: Snippet from assignmnt
