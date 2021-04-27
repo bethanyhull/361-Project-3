@@ -1,6 +1,7 @@
 package re;
 
 import fa.nfa.NFA;
+import fa.nfa.NFAState;
 
 /**
  * @author bethanyhull
@@ -9,7 +10,7 @@ import fa.nfa.NFA;
 
 public class RE implements REInterface {
 	private String regEx;
-	private Int state = 0;
+	private Integer state = 0;
 
 	public RE(String regEx) {
 		this.regEx = regEx;
@@ -70,8 +71,8 @@ public class RE implements REInterface {
 	}
 
 
-	private Int getState() {
-		Int i = state;
+	private Integer getState() {
+		Integer i = state;
 		state++;
 		return i;
 	}
@@ -91,6 +92,10 @@ public class RE implements REInterface {
 	    if (more() && peek() == '|') {
 	      eat ('|') ;
 	      NFA regex = regex();
+	      NFA combined = new NFA();
+	      String newStart = (getState()).toString();
+	      combined.addStartState(newStart);
+	      combined.addTransition(combined.getStartState().getName(), "e", term.getStartState());
 	      
 	      // TODO: need a method to handle this
 	      //Creeate a new NFA that combines the two NFA's in an either/or configuration
