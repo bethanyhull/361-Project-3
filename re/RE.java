@@ -16,12 +16,11 @@ public class RE implements REInterface {
 		this.regEx = regEx;
 	}
 
-	public NFA parse () {
-		NFA nfa = new NFA();
-	
-		//TODO: flesh out this method
-		return null;
-	}
+//	public NFA parse () {
+//		
+//		//TODO: flesh out this method
+//		return null;
+//	}
 	
 	
 	/* Recursive descent parsing internals. */
@@ -112,7 +111,7 @@ public class RE implements REInterface {
 	}
 
 	private NFA term() {
-		NFA factor = RegEx.blank ;
+		NFA factor = new NFA();
 
 	    while (more() && peek() != ')' && peek() != '|') {
 	      NFA nextFactor = factor();
@@ -125,6 +124,12 @@ public class RE implements REInterface {
 
 	private NFA factor() {
 		NFA baseNFA = base();
+	    
+	    while (more() && peek() == '*') {
+	      eat('*') ;
+	      base = new Repetition(base) ;
+	    }
+
 		//TODO: Snippet from assignmnt
 		// More code goes here
 
@@ -140,27 +145,28 @@ public class RE implements REInterface {
 		switch (peek()) {
 	      case '(':
 	        eat('(') ;
-	        RegEx r = regex() ;  
+	        NFA r = regex() ;  
 	        eat(')') ;
 	      return r ;
 
-	      case '\\':
-	       eat ('\\') ;
-	       char esc = next() ;
-	      return new Primitive(esc) ;
-
 	      default:
-	      return new Primitive(next()) ;
+	    	  NFA n = new NFA();
+	    	  int s = getState();
+	    	  int f = getState();
+	    	  n.addStartState(s);
+	    	  n.addFinalState(f);
+	    	  n.addTransition(s, next(), f);
+	    	  console.log(n)
+	      return n;
 	    }
-		return null;
-		//TODO: flesh out this method
+
 	}
 
 	@Override
 	public NFA getNFA() {
 		// TODO
 		// Break up the string into manageable sections using http://matt.might.net/articles/parsing-NFA-with-recursive-descent/
-		return null;
+		return regex(this.regEx);
 	}
 	
 	
