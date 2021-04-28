@@ -1,5 +1,6 @@
 package re;
 
+import fa.State;
 import fa.nfa.NFA;
 import fa.nfa.NFAState;
 
@@ -16,12 +17,6 @@ public class RE implements REInterface {
 		this.regEx = regEx;
 	}
 
-//	public NFA parse () {
-//		
-//		//TODO: flesh out this method
-//		return null;
-//	}
-	
 	
 	/* Recursive descent parsing internals. */
 
@@ -103,28 +98,39 @@ public class RE implements REInterface {
 	      // TODO: need a method to handle this
 	      //Create a new NFA that combines the two NFA's in an either/or configuration
 	      //return new Choice(term,regex) 
-	      return null;
-	    } else {
+	  	  System.out.println("\nRegex");
+	    	System.out.println(combined.toString());
+	      return combined;
+	    } 
+	    	  System.out.println("\nRegex");
+	    	  	System.out.println(term.toString());
 	     return term ;
-	    }
+	    
 		
 		//TODO: flesh out this method
 	}
 
 	private NFA term() {
+		// start with empty NFA
 		NFA factor = new NFA();
+		
 
+		// if factor is empty NFA, factor = nextFactor
+		// then as while loop continues each new "nextFactor" is concatinated to factor to make a bigger NFA
+		// for addTransition try using forEach loop like on line 136
 	    while (more() && peek() != ')' && peek() != '|') {
 	      NFA nextFactor = factor();
 	      
-	      //transition from last state in factor - how do you tell what that is?
+	     
 	      NFAState from = new NFAState("?");
 	      factor.addTransition(from.getName(), 'e', nextFactor.getStartState().getName());
 	      factor.addNFAStates(nextFactor.getStates());
 	      
 	      //TODO: Concatenation of factor and next factor
 	    }
-
+	    
+	  	  System.out.println("\nTerm");
+	    	System.out.println(factor.toString());
 	    return factor ;
 	}
 
@@ -133,12 +139,14 @@ public class RE implements REInterface {
 	    
 	    while (more() && peek() == '*') {
 	      eat('*') ;
-//	      base = new Repetition(base) ;
+	      for (State f : baseNFA.getFinalStates())  {
+	    	  baseNFA.addTransition(f.getName(), 'e', baseNFA.getStartState().getName());
+	      }
+      
 	    }
 
-		//TODO: Snippet from assignmnt
-		// More code goes here
-
+  	  System.out.println("\nFactor");
+  	System.out.println(baseNFA.toString());
 		return baseNFA;
 	}
 
@@ -153,6 +161,8 @@ public class RE implements REInterface {
 	        eat('(') ;
 	        NFA r = regex() ;  
 	        eat(')') ;
+	    	  System.out.println("\nBase");
+	    	System.out.println(r.toString());
 	      return r ;
 
 	      default:
@@ -162,6 +172,7 @@ public class RE implements REInterface {
 	    	  n.addStartState(s);
 	    	  n.addFinalState(f);
 	    	  n.addTransition(s, next(), f);
+	    	  System.out.println("\nBase");
 	    	System.out.println(n.toString());
 	      return n;
 	    }
