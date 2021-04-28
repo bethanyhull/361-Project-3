@@ -94,10 +94,11 @@ public class RE implements REInterface {
 	      NFA combined = new NFA();
 	      String newStart = (getState()).toString();
 	      combined.addStartState(newStart);
-	      combined.addTransition(newStart, 'e', term.getStartState().getName());
-	      combined.addTransition(newStart, 'e', regex.getStartState().getName());
 	      combined.addNFAStates(term.getStates());
 	      combined.addNFAStates(regex.getStates());
+	      combined.addTransition(newStart, 'e', term.getStartState().getName());
+	      combined.addTransition(newStart, 'e', regex.getStartState().getName());
+
 	      
 	      // TODO: need a method to handle this
 	      //Create a new NFA that combines the two NFA's in an either/or configuration
@@ -115,8 +116,13 @@ public class RE implements REInterface {
 
 	    while (more() && peek() != ')' && peek() != '|') {
 	      NFA nextFactor = factor();
-	      return null;
-	      //TODO: Concatination of factor and next factor
+	      
+	      //transition from last state in factor - how do you tell what that is?
+	      NFAState from = new NFAState("?");
+	      factor.addTransition(from.getName(), 'e', nextFactor.getStartState().getName());
+	      factor.addNFAStates(nextFactor.getStates());
+	      
+	      //TODO: Concatenation of factor and next factor
 	    }
 
 	    return factor ;
