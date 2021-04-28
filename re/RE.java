@@ -151,8 +151,8 @@ public class RE implements REInterface {
 
 	      default:
 	    	  NFA n = new NFA();
-	    	  int s = getState();
-	    	  int f = getState();
+	    	  String s = getState();
+	    	  String f = getState();
 	    	  n.addStartState(s);
 	    	  n.addFinalState(f);
 	    	  n.addTransition(s, next(), f);
@@ -166,7 +166,7 @@ public class RE implements REInterface {
 	public NFA getNFA() {
 		// TODO
 		// Break up the string into manageable sections using http://matt.might.net/articles/parsing-NFA-with-recursive-descent/
-		return regex(this.regEx);
+		return regex();
 	}
 	
 	
