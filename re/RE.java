@@ -162,7 +162,7 @@ public class RE implements REInterface {
 	    	  n.addStartState(s);
 	    	  n.addFinalState(f);
 	    	  n.addTransition(s, next(), f);
-	    	
+	    	System.out.println(n.toString());
 	      return n;
 	    }
 
