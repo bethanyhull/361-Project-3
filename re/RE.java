@@ -87,7 +87,7 @@ public class RE implements REInterface {
 	      eat ('|') ;
 	      NFA regex = regex();
 	      NFA combined = new NFA();
-	      String newStart = (getState()).toString();
+	      String newStart = getState();
 	      combined.addStartState(newStart);
 	      combined.addNFAStates(term.getStates());
 	      combined.addNFAStates(regex.getStates());
