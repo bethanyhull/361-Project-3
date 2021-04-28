@@ -116,16 +116,21 @@ public class RE implements REInterface {
 		
 
 		// if factor is empty NFA, factor = nextFactor
-		// then as while loop continues each new "nextFactor" is concatinated to factor to make a bigger NFA
+		// then as while loop continues each new "nextFactor" is concatenated to factor to make a bigger NFA
 		// for addTransition try using forEach loop like on line 136
 	    while (more() && peek() != ')' && peek() != '|') {
 	      NFA nextFactor = factor();
-	      
+	      if(factor.getStates().isEmpty()) {
+	    	  factor = nextFactor;
+	      }else {
+		      //NFAState from = new NFAState("?"); I was thinking there would only be a transition on the last state, so how would we find that
+	    	  //So if we are instead taking the final states from before, do we now need to make sure they are no longer final?
+		      for(State f : factor.getFinalStates()) {
+			      factor.addTransition(f.getName(), 'e', nextFactor.getStartState().getName());
+		      }
+		      factor.addNFAStates(nextFactor.getStates());
+	      }
 	     
-	      NFAState from = new NFAState("?");
-	      factor.addTransition(from.getName(), 'e', nextFactor.getStartState().getName());
-	      factor.addNFAStates(nextFactor.getStates());
-	      
 	      //TODO: Concatenation of factor and next factor
 	    }
 	    
