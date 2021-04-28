@@ -10,7 +10,11 @@ import fa.nfa.NFAState;
 
 public class RE implements REInterface {
 	private String regEx;
+<<<<<<< HEAD
 	private Integer state = 0;
+=======
+	private int state = 0;
+>>>>>>> base finished
 
 	public RE(String regEx) {
 		this.regEx = regEx;
@@ -70,10 +74,15 @@ public class RE implements REInterface {
 	}
 
 
-	private String getState() {
+<<<<<<< HEAD
+	private Integer getState() {
 		Integer i = state;
+=======
+	private int getState() {
+		int i = state;
+>>>>>>> base finished
 		state++;
-		return i.toString();
+		return i;
 	}
 	
 	
@@ -127,7 +136,7 @@ public class RE implements REInterface {
 	    
 	    while (more() && peek() == '*') {
 	      eat('*') ;
-//	      base = new Repetition(base) ;
+	      base = new Repetition(base) ;
 	    }
 
 		//TODO: Snippet from assignmnt
@@ -156,7 +165,7 @@ public class RE implements REInterface {
 	    	  n.addStartState(s);
 	    	  n.addFinalState(f);
 	    	  n.addTransition(s, next(), f);
-	    	
+	    	  console.log(n)
 	      return n;
 	    }
 
