@@ -26,7 +26,7 @@ public class REDriver {
 		//The file name is passed as an argument
 		
 				String fileName = "tests/p3tc1.txt";
-				//fileName = "tests/mtest1";
+				fileName = "tests/mtest4";
 				//String fileName = args[0];
 				File file = new File(fileName);
 				if(file.exists()){

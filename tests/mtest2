@@ -1,0 +1,8 @@
+ab(a|b)*ba
+abba
+abbba
+ababa
+a
+b
+e
+abaaaaaaaaabba
