@@ -1,5 +1,7 @@
 package re;
 
+import java.util.Set;
+
 import fa.State;
 import fa.nfa.NFA;
 import fa.nfa.NFAState;
@@ -86,14 +88,25 @@ public class RE implements REInterface {
 	    if (more() && peek() == '|') {
 	      eat ('|') ;
 	      NFA regex = regex();
+
 	      NFA combined = new NFA();
 	      String newStart = getState();
 	      combined.addStartState(newStart);
-	      combined.addNFAStates(term.getStates());
+	      Set<State> termStates = term.getStates();
+	      for(State s : termStates) {
+	    	  if(s.getName().isBlank()) {
+	    		  termStates.remove(s);
+	    		  System.out.println("Found null");
+	    	  }
+	      }
+	      combined.addNFAStates(termStates);
 	      combined.addNFAStates(regex.getStates());
 	      combined.addTransition(newStart, 'e', term.getStartState().getName());
 	      combined.addTransition(newStart, 'e', regex.getStartState().getName());
 	      
+	      System.out.println("term states: " + term.toString());
+	      System.out.println("regex states: " + regex.toString());
+	      System.out.println("combined states: " + combined.getStates().toString());
 	      // add the alphabet to the new language
 	      combined.addAbc(term.getABC());
 	      combined.addAbc(regex.getABC());
@@ -131,7 +144,20 @@ public class RE implements REInterface {
 	    	  //So if we are instead taking the final states from before, do we now need to make sure they are no longer final?
 		      for(State f : factor.getFinalStates()) {
 			      factor.addTransition(f.getName(), 'e', nextFactor.getStartState().getName());
+			      System.out.println("Name: " + f.getName());
+			      NFAState oldFinal = (NFAState)f;
+			      //oldFinal.setNonFinal();
+			      Set<NFAState> newFinal = factor.eClosure(oldFinal);
+			      System.out.println("new finals: " + newFinal.toString());
+			      for(NFAState s : newFinal) {
+			    	  if(s.equals(oldFinal)) {
+				    	  s.setNonFinal();
+			    	  }else {
+			    		  s.setFinal();
+			    	  }
+			      }
 		      }
+		      System.out.println("Final states " + factor.getFinalStates().toString());
 		      factor.addNFAStates(nextFactor.getStates());
 		      factor.addAbc(nextFactor.getABC());
 	      }
