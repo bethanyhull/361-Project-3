@@ -115,12 +115,12 @@ public class RE implements REInterface {
 	      // TODO: need a method to handle this
 	      //Create a new NFA that combines the two NFA's in an either/or configuration
 	      //return new Choice(term,regex) 
-	  	  System.out.println("\nRegex");
-	    	System.out.println(combined.toString());
+//	  	  System.out.println("\nRegex");
+//	    	System.out.println(combined.toString());
 	      return combined;
 	    } 
-	    	  System.out.println("\nRegex");
-	    	  	System.out.println(term.toString());
+//	    	  System.out.println("\nRegex");
+//	    	  	System.out.println(term.toString());
 	     return term ;
 	    
 		
@@ -137,8 +137,8 @@ public class RE implements REInterface {
 		// for addTransition try using forEach loop like on line 136
 	    while (more() && peek() != ')' && peek() != '|') {
 	      NFA nextFactor = factor();
-	  	  System.out.println("\nDEBUG: Next factor");
-	    	System.out.println(nextFactor.toString());
+//	  	  System.out.println("\nDEBUG: Next factor");
+//	    	System.out.println(nextFactor.toString());
 	      if(factor.getStates().isEmpty()) {
 	    	  factor = nextFactor;
 	      }else {
@@ -184,9 +184,9 @@ public class RE implements REInterface {
 	      //TODO: Concatenation of factor and next factor
 	    }
 	    
-	  	  System.out.println("\nTerm");
-	    	System.out.println(factor.toString());
-	    	System.out.println("Final states " + factor.getFinalStates().toString());
+//	  	  System.out.println("\nTerm");
+//	    	System.out.println(factor.toString());
+//	    	System.out.println("Final states " + factor.getFinalStates().toString());
 	    return factor ;
 	}
 
@@ -202,8 +202,8 @@ public class RE implements REInterface {
       
 	    }
 
-  	  System.out.println("\nFactor");
-  	System.out.println(baseNFA.toString());
+//  	  System.out.println("\nFactor");
+//  	System.out.println(baseNFA.toString());
 		return baseNFA;
 	}
 
@@ -218,8 +218,8 @@ public class RE implements REInterface {
 	        eat('(') ;
 	        NFA r = regex() ;  
 	        eat(')') ;
-	    	  System.out.println("\nBase");
-	    	System.out.println(r.toString());
+//	    	  System.out.println("\nBase");
+//	    	System.out.println(r.toString());
 	      return r ;
 
 	      default:
@@ -229,8 +229,8 @@ public class RE implements REInterface {
 	    	  n.addStartState(s);
 	    	  n.addFinalState(f);
 	    	  n.addTransition(s, next(), f);
-	    	  System.out.println("\nBase");
-	    	System.out.println(n.toString());
+//	    	  System.out.println("\nBase");
+//	    	System.out.println(n.toString());
 	      return n;
 	    }
 
