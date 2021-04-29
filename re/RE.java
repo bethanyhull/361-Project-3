@@ -93,6 +93,10 @@ public class RE implements REInterface {
 	      combined.addNFAStates(regex.getStates());
 	      combined.addTransition(newStart, 'e', term.getStartState().getName());
 	      combined.addTransition(newStart, 'e', regex.getStartState().getName());
+	      
+	      // add the alphabet to the new language
+	      combined.addAbc(term.getABC());
+	      combined.addAbc(regex.getABC());
 
 	      
 	      // TODO: need a method to handle this
@@ -129,6 +133,7 @@ public class RE implements REInterface {
 			      factor.addTransition(f.getName(), 'e', nextFactor.getStartState().getName());
 		      }
 		      factor.addNFAStates(nextFactor.getStates());
+		      factor.addAbc(nextFactor.getABC());
 	      }
 	     
 	      //TODO: Concatenation of factor and next factor
