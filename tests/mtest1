@@ -1,7 +1,7 @@
- (a|b)*
- aa
- bb
- ab
- ba
- e
- babaabab
+(a|b)*
+aa
+bb
+ab
+ba
+e
+babaabab
