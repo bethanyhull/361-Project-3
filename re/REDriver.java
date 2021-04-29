@@ -25,7 +25,7 @@ public class REDriver {
 	public static void main(String[] args) throws FileNotFoundException {
 		//The file name is passed as an argument
 		
-				String fileName = "tests/p3tc1.txt";
+				String fileName = "tests/p3tc3.txt";
 				//String fileName = args[0];
 				File file = new File(fileName);
 				if(file.exists()){
@@ -37,6 +37,8 @@ public class REDriver {
 					NFA nfa = re.getNFA();
 					//now process the strings
 					DFA dfa = nfa.getDFA();
+//					System.out.println("\nDFA:");
+//					System.out.println(dfa);
 					while(scan.hasNext()){
 						boolean accept = dfa.accepts(scan.nextLine());
 						System.out.println(accept?"yes":"no");

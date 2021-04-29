@@ -144,15 +144,21 @@ public class RE implements REInterface {
 	      }else {
 		      //NFAState from = new NFAState("?"); I was thinking there would only be a transition on the last state, so how would we find that
 	    	  //So if we are instead taking the final states from before, do we now need to make sure they are no longer final?
+	    	  
+	    	  //Set of old final states
 	    	  Set<State> oldFinals = factor.getFinalStates();
+	    	  
+	    	  //add states and alphabet to the NFA
 		      factor.addNFAStates(nextFactor.getStates());
 		      factor.addAbc(nextFactor.getABC());
+		      
+		      // for final states that are in th old liist
+		      // make them not final and link them to the nextFactor start state.
 		      for(State f : factor.getFinalStates()) {
 		    	  for (State o : oldFinals) {
 		    		  if (f.getName().equals(o.getName())) {
 		    			  ((NFAState) f).setNonFinal();
 					      factor.addTransition(f.getName(), 'e', nextFactor.getStartState().getName());
-					      System.out.println("Name: " + f.getName());
 		    			  
 		    		  }
 		    	  }
@@ -191,6 +197,7 @@ public class RE implements REInterface {
 	      eat('*') ;
 	      for (State f : baseNFA.getFinalStates())  {
 	    	  baseNFA.addTransition(f.getName(), 'e', baseNFA.getStartState().getName());
+	    	  baseNFA.addTransition(baseNFA.getStartState().getName(), 'e', f.getName());
 	      }
       
 	    }
