@@ -137,29 +137,42 @@ public class RE implements REInterface {
 		// for addTransition try using forEach loop like on line 136
 	    while (more() && peek() != ')' && peek() != '|') {
 	      NFA nextFactor = factor();
+	  	  System.out.println("\nDEBUG: Next factor");
+	    	System.out.println(nextFactor.toString());
 	      if(factor.getStates().isEmpty()) {
 	    	  factor = nextFactor;
 	      }else {
 		      //NFAState from = new NFAState("?"); I was thinking there would only be a transition on the last state, so how would we find that
 	    	  //So if we are instead taking the final states from before, do we now need to make sure they are no longer final?
-		      for(State f : factor.getFinalStates()) {
-			      factor.addTransition(f.getName(), 'e', nextFactor.getStartState().getName());
-			      System.out.println("Name: " + f.getName());
-			      NFAState oldFinal = (NFAState)f;
-			      //oldFinal.setNonFinal();
-			      Set<NFAState> newFinal = factor.eClosure(oldFinal);
-			      System.out.println("new finals: " + newFinal.toString());
-			      for(NFAState s : newFinal) {
-			    	  if(s.equals(oldFinal)) {
-				    	  s.setNonFinal();
-			    	  }else {
-			    		  s.setFinal();
-			    	  }
-			      }
-		      }
-		      System.out.println("Final states " + factor.getFinalStates().toString());
+	    	  Set<State> oldFinals = factor.getFinalStates();
 		      factor.addNFAStates(nextFactor.getStates());
 		      factor.addAbc(nextFactor.getABC());
+		      for(State f : factor.getFinalStates()) {
+		    	  for (State o : oldFinals) {
+		    		  if (f.getName().equals(o.getName())) {
+		    			  ((NFAState) f).setNonFinal();
+					      factor.addTransition(f.getName(), 'e', nextFactor.getStartState().getName());
+					      System.out.println("Name: " + f.getName());
+		    			  
+		    		  }
+		    	  }
+		    	  
+		    
+
+//			      NFAState oldFinal = (NFAState)f;
+//			      //oldFinal.setNonFinal();
+//			      Set<NFAState> newFinal = factor.eClosure(oldFinal);
+//			      System.out.println("new finals: " + newFinal.toString());
+//			      for(NFAState s : newFinal) {
+//			    	  if(s.equals(oldFinal)) {
+//				    	  s.setNonFinal();
+//			    	  }else {
+//			    		  s.setFinal();
+//			    	  }
+			      //}
+		      }
+//		      System.out.println("Final states " + factor.getFinalStates().toString());
+
 	      }
 	     
 	      //TODO: Concatenation of factor and next factor
@@ -167,6 +180,7 @@ public class RE implements REInterface {
 	    
 	  	  System.out.println("\nTerm");
 	    	System.out.println(factor.toString());
+	    	System.out.println("Final states " + factor.getFinalStates().toString());
 	    return factor ;
 	}
 
