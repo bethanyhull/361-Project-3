@@ -23,20 +23,6 @@ java -cp ".:./CS361FA.jar" re.REDriver ./tests/p3tc1.txt
 
 ## Discussion
 
-This project was definitely more complex than the last one. We were able to create the NFA relatively easily.
-Creating the eClosure method was more complex but not too difficult. We ran into the most trouble when writing
-the getDFA() method and fixing bugs. We realized that parts of the implementation for the NFA would have to be 
-changed to properly get the DFA. One small issue that caused a lot of problems was that the HashMap of transitions
-had the values as NFAState rather than a set of NFAStates. Since maps cannot have one key for multiple values, this
-caused problems. This was an easy fix though, and it made the getTo() method much simpler. The getDFA() method was
-difficult because it involved a while loop, multiple for loops, and several if statements. This made it difficult to 
-keep organized. While writing the getDFA() method, we knew we would need to check if multiple sets of states
-were equivalent but in a different order. We eventually converted our Linked Hash Sets to Tree Sets to keep them ordered. 
-We figured out the build path, so we were able to run the program in Eclipse (since in the last project we were only
-able to run on the command line). Overall, this project went well. We realized that we often made things more complicated
-than they needed to be. We also found that it helped a lot to take breaks after a certain amount of time working on the 
-same errors. There were several times that we made big breakthroughs when we spent a bit of time away. 
-
 This project was simpler than the last one, partially because the previous projects deepened our understanding of how DFAs 
 and NFAs are implemented. The given resources were very helpful, and Bethany had experience with parsing from the Programming
 Languages course. Since we were given the Matt Might website, we studied it and applied it to fit our project. 
@@ -55,3 +41,4 @@ We also added print statements to help us trace through where we were having err
 ## Sources used
 
 Matt Might Website http://matt.might.net/articles/parsing-regex-with-recursive-descent/
+Regular Expressions and Converting to a NFA http://www2.cs.duke.edu/csed/jflap/tutorial/regular/index.html
