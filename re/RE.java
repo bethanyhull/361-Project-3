@@ -7,13 +7,13 @@ import fa.nfa.NFA;
 import fa.nfa.NFAState;
 
 /**
- * @author bethanyhull
- *
+ * Generate an NFA that corresponds to a given regular expression
+ * @author Bethany Hull and Marie Phelan
  */
 
 public class RE implements REInterface {
 	private String regEx;
-	private Integer state = 0;
+	private Integer state = 0; //Keeps track of next NFAState name as an integer value
 
 	public RE(String regEx) {
 		this.regEx = regEx;
@@ -23,8 +23,7 @@ public class RE implements REInterface {
 	/* Recursive descent parsing internals. */
 
 	/**
-	 * returns the next item of input without consuming it;
-	 * 
+	 * returns the next item of input without consuming it; 
 	 * @return next char in the regex string
 	 */
 	private char peek() {
@@ -34,10 +33,10 @@ public class RE implements REInterface {
 	
 	/**
 	 * consumes the next item of input, failing if not equal to c.
-	 * 
 	 * @param c - char to be removed from the front of the regex string
 	 */
 	private void eat(char c) {
+		//Check that the next char is correct and remove it from the regular expression
 		if (peek() == c)
 			this.regEx = this.regEx.substring(1) ;
 		else
@@ -48,7 +47,6 @@ public class RE implements REInterface {
 	
 	/**
 	 * returns the next item of input and consumes it
-	 * 
 	 * @return next char in the regex string
 	 */
 	private char next() {
@@ -66,7 +64,10 @@ public class RE implements REInterface {
 		return regEx.length() > 0 ;
 	}
 
-
+	/**
+	 * Keeps track of the number of NFA states, so the next new one can be named appropriately
+	 * @return a string value of the next state's name (which is a number)
+	 */
 	private String getState() {
 		Integer i = state;
 		state++;
@@ -80,7 +81,7 @@ public class RE implements REInterface {
 	 * Handles the "|" char
 	 * Takes a term and regex NFA and concats them and returns them
 	 * Or if no | returns the term NFA
-	 * @return
+	 * @return NFA - either combined through "|" or the term() NFA
 	 */
 	private NFA regex() {
 		NFA term = term();
@@ -89,14 +90,15 @@ public class RE implements REInterface {
 	      eat ('|') ;
 	      NFA regex = regex();
 
+	      //Create a new NFA to combine term and regex in an either/or configuration
 	      NFA combined = new NFA();
 	      String newStart = getState();
 	      combined.addStartState(newStart);
 	      Set<State> termStates = term.getStates();
+	      //Check that no blank states are added
 	      for(State s : termStates) {
 	    	  if(s.getName().isBlank()) {
 	    		  termStates.remove(s);
-	    		  System.out.println("Found null");
 	    	  }
 	      }
 	      combined.addNFAStates(termStates);
@@ -104,47 +106,30 @@ public class RE implements REInterface {
 	      combined.addTransition(newStart, 'e', term.getStartState().getName());
 	      combined.addTransition(newStart, 'e', regex.getStartState().getName());
 	      
-	      System.out.println("term states: " + term.toString());
-	      System.out.println("regex states: " + regex.toString());
-	      System.out.println("combined states: " + combined.getStates().toString());
 	      // add the alphabet to the new language
 	      combined.addAbc(term.getABC());
 	      combined.addAbc(regex.getABC());
-
 	      
-	      // TODO: need a method to handle this
-	      //Create a new NFA that combines the two NFA's in an either/or configuration
-	      //return new Choice(term,regex) 
-//	  	  System.out.println("\nRegex");
-//	    	System.out.println(combined.toString());
 	      return combined;
 	    } 
-//	    	  System.out.println("\nRegex");
-//	    	  	System.out.println(term.toString());
-	     return term ;
-	    
-		
-		//TODO: flesh out this method
+	    //If there is no "|" character, there is no need to combine, so return term
+	    return term;		
 	}
-
+	
+	/**
+	 * Concatenate terms together as an NFA
+	 * @return NFA of concatenated previous and next terms
+	 */
 	private NFA term() {
 		// start with empty NFA
 		NFA factor = new NFA();
 		
-
-		// if factor is empty NFA, factor = nextFactor
-		// then as while loop continues each new "nextFactor" is concatenated to factor to make a bigger NFA
-		// for addTransition try using forEach loop like on line 136
+		// if factor is empty NFA, factor = nextFactor then as while loop continues each new "nextFactor" is concatenated to factor to make a bigger NFA
 	    while (more() && peek() != ')' && peek() != '|') {
 	      NFA nextFactor = factor();
-//	  	  System.out.println("\nDEBUG: Next factor");
-//	    	System.out.println(nextFactor.toString());
 	      if(factor.getStates().isEmpty()) {
 	    	  factor = nextFactor;
-	      }else {
-		      //NFAState from = new NFAState("?"); I was thinking there would only be a transition on the last state, so how would we find that
-	    	  //So if we are instead taking the final states from before, do we now need to make sure they are no longer final?
-	    	  
+	      }else { 
 	    	  //Set of old final states
 	    	  Set<State> oldFinals = factor.getFinalStates();
 	    	  
@@ -152,8 +137,7 @@ public class RE implements REInterface {
 		      factor.addNFAStates(nextFactor.getStates());
 		      factor.addAbc(nextFactor.getABC());
 		      
-		      // for final states that are in th old liist
-		      // make them not final and link them to the nextFactor start state.
+		      // for final states that are in the old list make them not final and link them to the nextFactor start state.
 		      for(State f : factor.getFinalStates()) {
 		    	  for (State o : oldFinals) {
 		    		  if (f.getName().equals(o.getName())) {
@@ -162,55 +146,34 @@ public class RE implements REInterface {
 		    			  
 		    		  }
 		    	  }
-		    	  
-		    
-
-//			      NFAState oldFinal = (NFAState)f;
-//			      //oldFinal.setNonFinal();
-//			      Set<NFAState> newFinal = factor.eClosure(oldFinal);
-//			      System.out.println("new finals: " + newFinal.toString());
-//			      for(NFAState s : newFinal) {
-//			    	  if(s.equals(oldFinal)) {
-//				    	  s.setNonFinal();
-//			    	  }else {
-//			    		  s.setFinal();
-//			    	  }
-			      //}
 		      }
-//		      System.out.println("Final states " + factor.getFinalStates().toString());
-
 	      }
-	     
-	      //TODO: Concatenation of factor and next factor
 	    }
-	    
-//	  	  System.out.println("\nTerm");
-//	    	System.out.println(factor.toString());
-//	    	System.out.println("Final states " + factor.getFinalStates().toString());
 	    return factor ;
 	}
 
+	/**
+	 * Handle the "*" char
+	 * @return NFA that corresponds to the "*" operator
+	 */
 	private NFA factor() {
 		NFA baseNFA = base();
 	    
 	    while (more() && peek() == '*') {
 	      eat('*') ;
+	      //Add transitions that implement "*"
 	      for (State f : baseNFA.getFinalStates())  {
 	    	  baseNFA.addTransition(f.getName(), 'e', baseNFA.getStartState().getName());
 	    	  baseNFA.addTransition(baseNFA.getStartState().getName(), 'e', f.getName());
 	      }
-      
 	    }
-
-//  	  System.out.println("\nFactor");
-//  	System.out.println(baseNFA.toString());
 		return baseNFA;
 	}
 
 	/**
 	 * Most basic of the levels parses "()" and individual chars in the language
 	 * 
-	 * @return basic
+	 * @return basic NFA
 	 */
 	private NFA base() {
 		switch (peek()) {
@@ -218,8 +181,6 @@ public class RE implements REInterface {
 	        eat('(') ;
 	        NFA r = regex() ;  
 	        eat(')') ;
-//	    	  System.out.println("\nBase");
-//	    	System.out.println(r.toString());
 	      return r ;
 
 	      default:
@@ -229,8 +190,6 @@ public class RE implements REInterface {
 	    	  n.addStartState(s);
 	    	  n.addFinalState(f);
 	    	  n.addTransition(s, next(), f);
-//	    	  System.out.println("\nBase");
-//	    	System.out.println(n.toString());
 	      return n;
 	    }
 
@@ -238,11 +197,7 @@ public class RE implements REInterface {
 
 	@Override
 	public NFA getNFA() {
-		// TODO
-		// Break up the string into manageable sections using http://matt.might.net/articles/parsing-NFA-with-recursive-descent/
 		return regex();
 	}
 	
-	
-
 }
